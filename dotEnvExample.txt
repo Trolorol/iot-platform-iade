@@ -1,0 +1,9 @@
+PORT=3000
+DB_HOST=localhost
+DB_USERNAME=admin
+DB_PASSWORD=postgres
+DB_PORT=5432
+MQTTS_URL='mqtt://mqttbrokeradress'
+MQTTS_PORT=mqttBrokerPort
+MQTTS_USER=mqttBrokerAdressUsername
+MQTTS_PASSWORD=mqttBrokerPassword

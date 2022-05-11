@@ -1,19 +1,26 @@
 require('dotenv').config();
-const { PORT } = process.env;
 
-const express = require('express');
-const routes = require('./routes');
-const bodyParser = require('body-parser')
-const logger = require('morgan');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const cors = require('cors');
 
 
-const app = express();
-const port = process.env.PORT;
+const routes = require('./routes/index');
+const visualRoutes = require('./routes/visualRoutes');
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(logger('dev'))
+var app = express();
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/api', routes);
+app.use('/', visualRoutes);
 
-app.listen(port, () => console.log(`Listening on port: ${PORT}`))
+
+module.exports = app;

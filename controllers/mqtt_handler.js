@@ -1,4 +1,3 @@
-
 var mqtt = require('mqtt')
 require('dotenv').config();
 
@@ -8,18 +7,17 @@ const mqttUser = process.env.MQTTS_USER;
 const mqttPassword = process.env.MQTTS_PASSWORD;
 
 let opt = {
-  host: mqttEndpoint,
-  port: mqttPort,
-  username: mqttUser,
-  password: mqttPassword,
-  protocol: 'mqtts',
-
+    host: mqttEndpoint,
+    port: mqttPort,
+    username: mqttUser,
+    password: mqttPassword,
+    protocol: 'mqtts',
 }
 
 function sendMessage(topic, message) {
-  var client = mqtt.connect(mqttEndpoint, opt);
+    var client = mqtt.connect(mqttEndpoint, opt);
 
-  client.publish(topic, message);
+    client.publish(topic, message);
 }
 
 
@@ -38,5 +36,5 @@ function sendMessage(topic, message) {
 
 
 module.exports = {
-  sendMessage
+    sendMessage
 }

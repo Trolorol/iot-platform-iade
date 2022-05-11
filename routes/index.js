@@ -14,8 +14,6 @@ router.post('/delete_account', controllers.simpleDeleteAccount);
 
 //USERS ROUTES//
 
-router.get('/', (req, res) => res.send('This is root!'))
-
 router.get('/users/devices', controllers.getDevicesFromUserId)
 
 router.post('/users', controllers.createUser)
@@ -42,6 +40,12 @@ router.put('/devices/:id', controllers.updateDevice)
 
 router.delete('/devices/:id', controllers.deleteDevice)
 
+
+
+// Screen Routes 
+router.get('/', function(req, res, next) {
+    res.render('index', { title: 'Express' });
+});
 
 
 

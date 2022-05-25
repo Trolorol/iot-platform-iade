@@ -1,9 +1,10 @@
 PORT=3000
 DB_HOST=localhost
 DB_USERNAME=admin
-DB_PASSWORD=postgres
+DB_PASSWORD=iot-platform-iade-2022
 DB_PORT=5432
-MQTTS_URL='mqtt://mqttbrokeradress'
+MQTTS_URL='mqtt.iade-iot.eu'
 MQTTS_PORT=mqttBrokerPort
-MQTTS_USER=mqttBrokerAdressUsername
-MQTTS_PASSWORD=mqttBrokerPassword
+MQTTS_USER=8883
+MQTTS_PASSWORD=TcV1YrduetnMmxx9
+

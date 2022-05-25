@@ -1,0 +1,17 @@
+version: "2.3"
+
+services:
+    database:
+      container_name: iot-database
+      restart: always
+      build:
+          context: ./database
+          dockerfile: Dockerfile
+      ports:
+        - "5423:5432"
+      environment:
+          POSTGRES_PASSWORD: iot-platform-iade-2022
+          POSTGRES_USER: admin
+          POSTGRES_DB: iot-platform
+      volumes:
+          - ./volumes/database:/var/lib/postgresql/data

@@ -1,0 +1,101 @@
+html, body {
+    margin:0;
+    padding:0;
+}
+
+body {
+    display: grid;
+    grid-template-columns: minmax(auto,230px) auto;
+    grid-template-rows: 148px 110px auto;
+    grid-template-areas: 'n h'
+                         'n m' 
+                         'n m'; 
+}
+
+body > nav {
+    grid-area: n;
+    color: #656565;
+    background-color: #80acd4;
+    display: flex;
+    flex-direction: column;
+}
+  
+body > header {
+    grid-area: h;
+    background-color: #52acd6;
+}
+
+body > main  {
+    background-color: #9a9b9b;
+    grid-area: m;
+    height: 100%;
+}
+
+
+    
+body > nav > img {
+    width: 102px;
+    height: 64px;
+    position: relative;
+    top:min(60px, 10vh);
+    margin-right: auto;
+    margin-left: 26%;
+    /*margin-bottom: 62px;*/
+    margin-bottom: min(62px, 10vh);
+}
+
+body > nav > #slogan {
+    font-family: Yanone Kaffeesatz;
+    color: #03B5AA;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: auto;
+    margin-left: auto;
+    position:relative;
+    margin-bottom: min(80px, 5vh);
+   
+}
+
+
+/*MENU lateral */
+
+body > nav > section {
+    display:flex;
+    flex-direction: column;
+}
+
+.menu {
+    background-color: rgb(1, 51, 53) ;
+    color: white;
+    display: inline-block;
+    font-size: 17px;
+    font-family: Staatliches;
+    border:none;
+    padding-left: 13%;
+    text-align: left;
+}
+
+.menu_selected{
+    background: rgba(149, 212, 232, .15);
+    border: none;
+    color: rgb(139, 219, 243);
+    display: inline-block;
+    font-size: 18px;
+    font-family: Staatliches;
+    padding-left: 13%;
+    text-align: left;
+}
+
+.menu:hover{
+    background-color: rgb(11, 69, 71);
+    font-size: 18px;
+  }
+
+
+body > nav > section > button > p {
+    display: inline-block;
+    position:relative;
+    left:20px;
+}
+
+/*FIM DO MENU*/

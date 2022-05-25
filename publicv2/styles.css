@@ -1,0 +1,254 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-family: 'Jost', sans-serif;
+  }
+  
+  body {
+    margin: 0;
+  }
+  
+  header {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    margin: 3rem;
+    border-radius: 10px;
+    padding: 1rem;
+    background-color: #1b995e;
+    color: white;
+    text-align: center;
+  }
+  
+  #assignment {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    margin: 3rem;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  #assignment h2 {
+    font-size: 2rem;
+    border-bottom: 4px solid #ccc;
+    color: #1b995e;
+    margin: 0 0 1rem 0;
+  }
+  
+  #assignment ul {
+    list-style: none;
+    margin: 1rem 0;
+    padding: 0;
+  }
+  
+  #assignment li {
+    margin: 1rem 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+    background-color: #8ddba4;
+    padding: 0.5rem;
+    color: #1f1f1f;
+    border-radius: 25px;
+  }
+  
+  #assignment input {
+    font: inherit;
+    border: 1px solid #ccc;
+  }
+  
+  #assignment input:focus {
+    outline: none;
+    border-color: #1b995e;
+    background-color: #d7fdeb;
+  }
+  
+  #assignment button {
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid #ff0077;
+    background-color: #ff0077;
+    color: white;
+    padding: 0.05rem 1rem;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.26);
+  }
+  
+  #assignment button:hover,
+  #assignment button:active {
+    background-color: #ec3169;
+    border-color: #ec3169;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.26);
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Poppins&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box
+}
+
+body {
+  background-color: #eee;
+  height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to top, #fff 10%, rgba(93, 42, 141, 0.4) 90%) no-repeat
+}
+
+.wrapper {
+  max-width: 500px;
+  border-radius: 10px;
+  margin: 50px auto;
+  padding: 30px 40px;
+  box-shadow: 20px 20px 80px rgb(206, 206, 206)
+}
+
+.h2 {
+  font-family: 'Roboto';
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #400485;
+}
+
+.h4 {
+  font-family: 'Poppins', sans-serif
+}
+
+.input-field {
+  border-radius: 5px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #400485;
+  color: #400485
+}
+
+.input-field:hover {
+  color: #7b4ca0;
+  border: 1px solid #7b4ca0
+}
+
+input {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  padding: 0px 2px;
+  font-family: 'Poppins', sans-serif
+}
+
+.fa-eye-slash.btn {
+  border: none;
+  outline: none;
+  box-shadow: none
+}
+
+a {
+  text-decoration: none;
+  color: #400485;
+  font-weight: 700
+}
+
+a:hover {
+  text-decoration: none;
+  color: #7b4ca0
+}
+
+.option {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer
+}
+
+.option label.text-muted {
+  display: block;
+  cursor: pointer
+}
+
+.option input {
+  display: none
+}
+
+.checkmark {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer
+}
+
+.option input:checked~.checkmark:after {
+  display: block
+}
+
+.option .checkmark:after {
+  content: "";
+  width: 13px;
+  height: 13px;
+  display: block;
+  background: #400485;
+  position: absolute;
+  top: 48%;
+  left: 53%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: 300ms ease-in-out 0s
+}
+
+.option input[type="radio"]:checked~.checkmark {
+  background: #fff;
+  transition: 300ms ease-in-out 0s;
+  border: 1px solid #400485
+}
+
+.option input[type="radio"]:checked~.checkmark:after {
+  transform: translate(-50%, -50%) scale(1)
+}
+
+.btn.btn-block {
+  border-radius: 20px;
+  background-color: #400485;
+  color: #fff
+}
+
+.btn.btn-block:hover {
+  background-color: #55268be0
+}
+
+@media(max-width: 575px) {
+  .wrapper {
+    margin: 10px
+  }
+}
+
+@media(max-width:424px) {
+  .wrapper {
+    padding: 30px 10px;
+    margin: 5px
+  }
+
+  .option {
+    position: relative;
+    padding-left: 22px
+  }
+
+  .option label.text-muted {
+    font-size: 0.95rem
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 2px
+  }
+
+  .option .checkmark:after {
+    top: 50%
+  }
+
+  #forgot {
+    font-size: 0.95rem
+  }
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/vue@next" defer></script>
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+    <section id="app">
+
+        <body v-if="login===true" oncontextmenu='return false' class='snippet-body'>
+            <div class="wrapper bg-white">
+                <div class="h2 text-center">IoT</div>
+                <div class="h4 text-muted text-center pt-2">Enter your login details</div>
+                <form class="pt-3">
+                    <div class="form-group py-2">
+                        <div class="input-field"> <span class="far fa-user p-2"></span> <input type="text"
+                                placeholder="Username or Email Address" required class=""> </div>
+                    </div>
+                    <div class="form-group py-1 pb-2">
+                        <div class="input-field"> <span class="fas fa-lock p-2"></span> <input type="text"
+                                placeholder="Enter your Password" required class=""> <button
+                                class="btn bg-white text-muted">
+                                <span class="far fa-eye-slash"></span> </button> </div>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <div class="remember"> <label class="option text-muted">
+                                </span> </label> </div>
+                        <div class="ml-auto"> <a href="#" id="forgot">Forgot Password?</a> </div>
+                    </div> <button v-model="login" class="btn btn-block text-center my-3">Log in</button>
+                    <div class="text-center pt-3 text-muted">Not a member? <a href="#">Sign up</a></div>
+                </form>
+            </div>
+            <script type='text/javascript'></script>
+        </body>
+    </section>
+</body>
+
+</html>

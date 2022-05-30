@@ -1,0 +1,108 @@
+header {
+  background-color: red;
+  padding: 20px;
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+}
+#header-left {
+  background-color: blue;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+}
+#header-center {
+  background-color: green;
+  padding: 20px;
+  align-items: center;
+}
+#header-right {
+  background-color: yellow;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: row-reverse;
+}
+#login-button {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px;
+}
+#logout-button {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px;
+}
+#register-button {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px;
+}
+#mode-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#mode-selector-button {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 3px;
+}
+
+ul li {
+  display: inline-block;
+  background-color: #eee;
+  list-style-type: none;
+  margin-right: 1vh;
+  padding: 5vh;
+  border-right: 1px solid white;
+}
+
+#register-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+#register-device {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#add-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#register-group {
+  grid-column-start: -1;
+}
+
+#register-device {
+  grid-column-start: 0;
+}
+
+#add-section input[type="text"] {
+  color: red;
+}
+
+#add-section input[type="submit"] {
+  color: red;
+}

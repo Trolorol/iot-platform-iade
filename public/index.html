@@ -1,42 +1,107 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <title>IoT Platform</title>
-    <link href='https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css' rel='stylesheet'>
-    <link href='https://use.fontawesome.com/releases/v5.7.2/css/all.css' rel='stylesheet'>
-    <link href="./css/style.css" rel="stylesheet">
-    <script type='text/javascript' src=''></script>
-    <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
-    <script type='text/javascript'
-        src='https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js'></script>
-    <script src="./js/index.js"></script>
+    <!-- Import VUE  CDN-->
+    <script src="https://unpkg.com/vue@next" defer></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Import css  from styles.css-->
+    <link rel="stylesheet" href="./styles.css">
+    <!-- Import js from app.js-->
+    <script src="app.js" defer></script>
+    <title>Document</title>
 </head>
 
-<body class='snippet-body'>
-    <div class="wrapper bg-white">
-        <div class="h2 text-center">IoT</div>
-        <div class="h4 text-muted text-center pt-2">Enter your login details</div>
-        <form class="pt-3">
-            <div class="form-group py-2">
-                <div class="input-field"> <span class="far fa-user p-2"></span> <input type="text"
-                        placeholder="Username or Email Address" required id="email"> </div>
+<body>
+    <section id="app">
+        <header>
+            <div id="header-left">
+                <p>Header Esquerda</p>
             </div>
-            <div class="form-group py-1 pb-2">
-                <div class="input-field"> <span class="fas fa-lock p-2"></span> <input type="text"
-                        placeholder="Enter your Password" required id="password"> <button
-                        class="btn bg-white text-muted">
-                        <span class="far fa-eye-slash"></span> </button> </div>
+            <div id="header-center">
+                <p>Header Centro</p>
             </div>
-            <div class="d-flex align-items-start">
-                <div class="remember"> <label class="option text-muted">
-                        </span> </label> </div>
-            </div> <button class="btn btn-block text-center my-3" onclick="login()">Log in</button>
-        </form>
-    </div>
-    <script type='text/javascript'></script>
+            <div id="header-right">
+                <button id="login-button" v-if="!logedin" @click="login">Login</button>
+                <button id="logout-button" v-else @click="logout">Logout</button>
+                <button id="register-button" v-if="!logedin" @click="register">Register</button>
+            </div>
+        </header>
+        <div id="mode-selector" v-if="logedin">
+            <button id="mode-selector-button" @click='changeModeDevices'>Devices</button>
+            <button id="mode-selector-button" @click='changeModeGroups'>Groups</button>
+        </div>
+        <section id="userContent" v-if="logedin">
+            <ul>
+                <li v-for="(device, key) in devices" v-if="deviceMode && logedin">
+                    <div class="device-name">
+                        <p>{{device.name}}</p>
+                        <p>{{key}}</p>
+                    </div>
+                    <div class="device-status">
+                        <p>{{device.status}}</p>
+                    </div>
+                    <div class="device-actions">
+                        <button @click="changeDeviceStatus(key)">On</button>
+                        <button @click="changeDeviceStatus(key)">Off</button>
+                    </div>
+                </li>
+                <li v-for="(group, key) in groups" v-if="groupMode && logedin">
+                    <div class="group-name">
+                        <p>{{group.name}}</p>
+                        <p>{{key}}</p>
+                    </div>
+                    <div class="group-status">
+                        <p>{{group.status}}</p>
+                    </div>
+                    <div class="group-actions">
+                        <button @click="changeGroupStatus(key)">On</button>
+                        <button @click="changeGroupStatus(key)">Off</button>
+                    </div>
+                </li>
+            </ul>
+            <div id="mode-selector" v-if="logedin">
+                <button id="mode-selector-button" @click="addDeviceMode = !addDeviceMode">Add Devices</button>
+                <button id="mode-selector-button" @click="addGroupMode = !addGroupMode">Add Groups</button>
+            </div>
+            <section id="add-section">
+                <section id="register-device" v-if="addDeviceMode">
+                    <form action="submitNewDevice">
+                        <input type="text" name="deviceName" placeholder="Device Name">
+                        <input type="text" name="deviceStatus" placeholder="Device Status">
+                        <input type="submit" value="Submit">
+                    </form>
+                </section>
+
+
+
+                <section id="register-group" v-if="addGroupMode">
+                    <form action="submitNewGroup">
+                        <input type="text" name="groupName" placeholder="Group Name">
+                        <input type="text" name="groupStatus" placeholder="Group Status">
+                        <input type="submit" value="Submit">
+                    </form>
+                </section>
+
+            </section>
+        </section>
+        <section id="register-form" v-if="registerMode">
+            <div></div>
+            <form action="submitNewUser" method="post">
+                <input type="text" name="userName" placeholder="User Name">
+                <input type="text" name="userEmail" placeholder="User Email">
+                <input type="text" name="userPassword" placeholder="User Password">
+                <input type="submit" value="Submit">
+            </form>
+            <div></div>
+        </section>
+
+
+
+    </section>
 </body>
 
 </html>

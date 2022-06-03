@@ -13,7 +13,7 @@ router.post("/delete_account", controllers.simpleDeleteAccount);
 
 //USERS ROUTES//
 
-router.get("/users/devices", controllers.getDevicesFromUserId);
+router.get("/users/devices/:user_id", controllers.getDevicesFromUserId);
 
 router.post("/users", controllers.createUser);
 

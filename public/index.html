@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- Import VUE  CDN-->
     <script src="https://unpkg.com/vue@next" defer></script>
     <meta charset="UTF-8">
@@ -22,12 +23,13 @@
                 <p>Header Esquerda</p>
             </div>
             <div id="header-center">
-                <p>Header Centro</p>
+                <p v-if="logedin">{{user.name}} {{user.lastName}}</p>
+                <p v-else>IoT APP</p>
             </div>
             <div id="header-right">
-                <button id="login-button" v-if="!logedin" @click="login">Login</button>
+                <button id="login-button" v-if="!logedin" @click="showLogin">Login</button>
                 <button id="logout-button" v-else @click="logout">Logout</button>
-                <button id="register-button" v-if="!logedin" @click="register">Register</button>
+                <button id="register-button" v-if="!logedin" @click="showRegister">Register</button>
             </div>
         </header>
         <div id="mode-selector" v-if="logedin">
@@ -39,7 +41,7 @@
                 <li v-for="(device, key) in devices" v-if="deviceMode && logedin">
                     <div class="device-name">
                         <p>{{device.name}}</p>
-                        <p>{{key}}</p>
+                        <p>DEV: {{key}}</p>
                     </div>
                     <div class="device-status">
                         <p>{{device.status}}</p>
@@ -89,14 +91,22 @@
             </section>
         </section>
         <section id="register-form" v-if="registerMode">
-            <div></div>
-            <form action="submitNewUser" method="post">
-                <input type="text" name="userName" placeholder="User Name">
-                <input type="text" name="userEmail" placeholder="User Email">
-                <input type="text" name="userPassword" placeholder="User Password">
-                <input type="submit" value="Submit">
-            </form>
-            <div></div>
+            <div>
+                <label>Register</label>
+                <input v-model="user.email" placeholder="User Email">
+                <input v-model="user.password" placeholder="User Password">
+                <button @click="register" value="Submit">
+
+            </div>
+        </section>
+        <section id="register-form" v-if="loginMode">
+            <div>
+                <label>Login</label>
+                <input v-model="user.email" placeholder="User Email">
+                <input v-model="user.password" placeholder="User Password" type="password">
+                <button @click="submitLogin" value="Submit">Submit</button>
+                <p v-if="wrongCredentials" style="color: red;">Password Ou user errados</p>
+            </div>
         </section>
 
 

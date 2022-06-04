@@ -32,30 +32,41 @@
                 <button id="register-button" v-if="!logedin" @click="showRegister">Register</button>
             </div>
         </header>
+        <!-- Device/Group Selector Buttons -->
         <div id="mode-selector" v-if="logedin">
             <button id="mode-selector-button" @click='changeModeDevices'>Devices</button>
             <button id="mode-selector-button" @click='changeModeGroups'>Groups</button>
         </div>
+        <!-- End Device/Group Selector Buttons -->
         <section id="userContent" v-if="logedin">
+            <!-- Device Viewer -->
             <ul>
                 <li v-for="(device, key) in devices" v-if="deviceMode && logedin">
                     <div class="device-name">
                         <p>{{device.name}}</p>
                         <p>DEV: {{key}}</p>
+                        <button @click="deletedevice(device.id)">Delete Device</button>
                     </div>
                     <div class="device-status">
                         <p>{{device.status}}</p>
                     </div>
                     <div class="device-actions">
-                        <button @click="changeDeviceStatus(key)">On</button>
-                        <button @click="changeDeviceStatus(key)">Off</button>
+                        <button @click="changeDeviceStatus(device.id, key)">On</button>
+                        <button @click="changeDeviceStatus(device.id, key)">Off</button>
                     </div>
                 </li>
+                <!-- End Device Viewer -->
+                <!-- Group Viewer -->
                 <li v-for="(group, key) in groups" v-if="groupMode && logedin">
                     <div class="group-name">
                         <p>{{group.name}}</p>
-                        <p>{{key}}</p>
+                        <p>Associated Devices</p>
+                        <div v-for="device in groups[key].device">
+                            <p>Device: {{device.name}} - Status: {{device.status}}</p>
+                        </div>
+                        <button @click="deleteGroup(group.id)">Delete Group</button>
                     </div>
+
                     <div class="group-status">
                         <p>{{group.status}}</p>
                     </div>
@@ -64,31 +75,35 @@
                         <button @click="changeGroupStatus(key)">Off</button>
                     </div>
                 </li>
+                <!-- End Group Viewer -->
             </ul>
+            <!-- Add Froms Viewer Buttons -->
             <div id="mode-selector" v-if="logedin">
                 <button id="mode-selector-button" @click="addDeviceMode = !addDeviceMode">Add Devices</button>
                 <button id="mode-selector-button" @click="addGroupMode = !addGroupMode">Add Groups</button>
             </div>
+            <!-- End Add Froms Viewer Buttons -->
+            <!-- Add Forms-->
             <section id="add-section">
                 <section id="register-device" v-if="addDeviceMode">
-                    <form action="submitNewDevice">
-                        <input type="text" name="deviceName" placeholder="Device Name">
-                        <input type="text" name="deviceStatus" placeholder="Device Status">
-                        <input type="submit" value="Submit">
-                    </form>
+                    <label for="deviceName">DeviceName</label>
+                    <input type="text" name="deviceName" v-model="device.name">
+                    <button name="submit" @click="createDevice">Submit</button>
                 </section>
-
-
-
                 <section id="register-group" v-if="addGroupMode">
-                    <form action="submitNewGroup">
-                        <input type="text" name="groupName" placeholder="Group Name">
-                        <input type="text" name="groupStatus" placeholder="Group Status">
-                        <input type="submit" value="Submit">
-                    </form>
-                </section>
+                    <label for="name">Name</label>
+                    <input type="text" name="name" v-model="group.name">
 
+                    <label for="devices">Devices</label>
+                    <select v-model="group.devices" name="devices" multiple>
+                        <option v-for="(device, key) in devices" :value="device.id">{{device.name}}</option>
+                    </select>
+                    <h1>To Select Multiple hold Ctrl key and Click On The Name</h1>
+
+                    <button @click="addGroup">Submit</button>
+                </section>
             </section>
+            <!-- End Add Forms-->
         </section>
         <section id="register-form" v-if="registerMode">
             <div>
@@ -108,9 +123,6 @@
                 <p v-if="wrongCredentials" style="color: red;">Password Ou user errados</p>
             </div>
         </section>
-
-
-
     </section>
 </body>
 

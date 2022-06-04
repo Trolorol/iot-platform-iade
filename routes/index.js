@@ -5,12 +5,19 @@ const router = Router();
 //ACTIONS ROUTES//
 
 router.post("/switch_state", controllers.activateDevice);
+router.post("/fetch_devices", controllers.fetchDevices);
 
 //LOGIN ROUTES//
 router.post("/login", controllers.simpleLogin);
 router.post("/signup", controllers.simpleSignup);
 router.post("/delete_account", controllers.simpleDeleteAccount);
 
+//Group Routes//
+
+router.get("/groups/:user_id", controllers.getGroupsFromUserId);
+
+router.post("/groups", controllers.createGroup);
+router.delete("/groups/:id", controllers.deleteGroup);
 //USERS ROUTES//
 
 router.get("/users/devices/:user_id", controllers.getDevicesFromUserId);

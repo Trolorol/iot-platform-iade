@@ -1,6 +1,5 @@
-//const { where } = require('sequelize/types');
-const { User, Device } = require("../models");
-var mqttHandler = require("./mqtt_handler");
+const { User, Device, Groups, DeviceGroups } = require("../models");
+const mqttHandler = require("./mqtt_handler");
 
 // Activate device with MQTT given a user_id and device_id
 const activateDevice = async (req, res) => {
@@ -32,6 +31,7 @@ const activateDevice = async (req, res) => {
       if (device) {
         // Get the device status
         const status = device.status;
+        const device_serial = device.serial_number;
         // If device is not active
         if (status === "inactive") {
           // Activate device status
@@ -43,7 +43,8 @@ const activateDevice = async (req, res) => {
           );
           if (updated) {
             //Call mqtt handler to publsih to client topic
-            mqttHandler.sendMessage(`${user.email}/${device_id}`, "active");
+            console.log("Activating Device");
+            mqttHandler.sendMessage(`${user.email}/${device_serial}`, "active");
             return res.status(200).json({ device });
           }
         }
@@ -58,13 +59,39 @@ const activateDevice = async (req, res) => {
           );
           if (updated) {
             //Call mqtt handler to publsih to client topic
-            mqttHandler.sendMessage(`${user.email}/${device_id}`, "inactive");
+            mqttHandler.sendMessage(
+              `${user.email}/${device_serial}`,
+              "inactive"
+            );
             return res.status(200).json({ device });
           }
         }
       }
     }
   } catch (error) {
+    console.log(error);
+    return res.status(500).send(error.message);
+  }
+};
+
+const fetchDevices = async (req, res) => {
+  try {
+    let user_id = req.body.userId;
+    console.log(req.body.userId);
+    // Get user associed with the device
+    const user = await User.findOne({
+      where: { id: user_id },
+    });
+    // If user exists
+    if (user) {
+      // readTopic(user.email);
+      // Get devices associed with the user
+      // let message = await mqttHandler.readTopic(user.email);
+      console.log("message: ", message);
+      return res.status(200).json({ message });
+    }
+  } catch (error) {
+    console.log(error);
     return res.status(500).send(error.message);
   }
 };
@@ -216,25 +243,17 @@ const updateDevice = async (req, res) => {
 // This could be used for other crude functions where the action is dependent on user id
 const deleteDevice = async (req, res) => {
   try {
-    const user = await User.findOne({
-      where: { id: req.body.user_id },
+    let deviceId = req.params.id;
+    const deleteAssociations = await DeviceGroups.destroy({
+      where: { deviceId: deviceId },
     });
-    if (user) {
-      const device = await Device.findOne({
-        where: { id: req.body.device_id },
-      });
-      if (device) {
-        const deleted = await Device.destroy({
-          where: { id: req.body.device_id },
-        });
-        if (deleted) {
-          return res.status(204).send("Device deleted");
-        }
-        throw new Error("Device not found");
-      }
-      throw new Error("Device not found");
+    const deleted = await Device.destroy({
+      where: { id: deviceId },
+    });
+    if (deleted) {
+      return res.status(204).send("Device deleted");
     }
-    throw new Error("User not found");
+    throw new Error("Device not found");
   } catch (error) {
     return res.status(500).send(error.message);
   }
@@ -318,7 +337,69 @@ const simpleDeleteAccount = async (req, res) => {
   }
 };
 
+//Given a user_id, returns all groups that the user is a member of
+const getGroupsFromUserId = async (req, res) => {
+  try {
+    let id = req.params.user_id;
+    console.log(req.params.user_id);
+    const groups = await Groups.findAll({
+      where: { userId: id },
+      include: [
+        {
+          model: Device,
+          as: "device",
+        },
+      ],
+    });
+
+    if (groups) {
+      return res.status(200).json({ groups });
+    }
+    return res
+      .status(404)
+      .send("Device with the specified User ID does not exists");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error.message);
+  }
+};
+
+const createGroup = async (req, res) => {
+  try {
+    //TODO Falta associar devices iniciais ao grupo
+    const group = await Groups.create(req.body);
+    return res.status(201).json({
+      group,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const deleteGroup = async (req, res) => {
+  try {
+    let groupId = req.params.id;
+
+    const deleteAssociations = await DeviceGroups.destroy({
+      where: { groupId: groupId },
+    });
+
+    const deleted = await Groups.destroy({
+      where: { id: groupId },
+    });
+    if (deleted) {
+      return res.status(204).send("Group deleted");
+    }
+    throw new Error("Group not found");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error.message);
+  }
+};
+
 module.exports = {
+  deleteGroup,
+  createGroup,
   createUser,
   getAllUsers,
   getUserById,
@@ -334,4 +415,6 @@ module.exports = {
   simpleSignup,
   simpleDeleteAccount,
   activateDevice,
+  fetchDevices,
+  getGroupsFromUserId,
 };

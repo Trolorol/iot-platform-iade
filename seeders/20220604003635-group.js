@@ -3,10 +3,10 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert(
-      "Devices",
+      "Groups",
       [
         {
-          name: "Device 1",
+          name: "Group 1",
           userId: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -17,6 +17,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete("Devices", null, {});
+    return queryInterface.bulkDelete("Groups", null, {});
   },
 };

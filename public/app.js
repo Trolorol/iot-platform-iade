@@ -68,6 +68,10 @@ const app = Vue.createApp({
     },
     logout() {
       this.logedin = false;
+      localStorage.removeItem("id");
+      localStorage.removeItem("firstName");
+      localStorage.removeItem("lastName");
+      localStorage.removeItem("email");
     },
     showRegister() {
       this.registerMode = true;

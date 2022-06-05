@@ -20,11 +20,11 @@
     <section id="app">
         <header>
             <div id="header-left">
-                <p>Header Esquerda</p>
+                <p>Bem vindo á sua Plataforma IoT</p>
             </div>
             <div id="header-center">
                 <p v-if="logedin">{{user.name}} {{user.lastName}}</p>
-                <p v-else>IoT APP</p>
+                <img v-else src="./img/iot_logo.png">
             </div>
             <div id="header-right">
                 <button id="login-button" v-if="!logedin" @click="showLogin">Login</button>
@@ -106,12 +106,13 @@
             </section>
             <!-- End Add Forms-->
         </section>
-        <section id="register-form" v-if="registerMode">
-            <div>
-                <label>Register</label>
-                <input v-model="user.email" placeholder="User Email">
-                <input v-model="user.password" placeholder="User Password">
-                <button @click="register" value="Submit">
+        <div id="pre-login-forms">
+            <section id="register-form" v-if="registerMode">
+                <div>
+                    <label>Register</label>
+                    <input v-model="user.email" placeholder="User Email">
+                    <input v-model="user.password" placeholder="User Password">
+                    <button @click="register" value="Submit">
 
             </div>
         </section>
@@ -121,9 +122,12 @@
                 <input v-model="user.email" placeholder="User Email">
                 <input v-model="user.password" placeholder="User Password" type="password">
                 <button @click="submitLogin" value="Submit">Submit</button>
-                <p v-if="wrongCredentials" style="color: red;">Password Ou user errados</p>
-            </div>
-        </section>
+                    <p v-if="wrongCredentials" style="color: red;">Password Ou user errados</p>
+                </div>
+            </section>
+        </div>
+
+
     </section>
 </body>
 

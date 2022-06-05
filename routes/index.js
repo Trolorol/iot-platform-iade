@@ -5,6 +5,7 @@ const router = Router();
 //ACTIONS ROUTES//
 
 router.post("/switch_state", controllers.activateDevice);
+router.post("/switch_group_state", controllers.activateGroup);
 router.post("/fetch_devices", controllers.fetchDevices);
 
 //LOGIN ROUTES//
@@ -45,8 +46,8 @@ router.put("/devices/:id", controllers.updateDevice);
 router.delete("/devices/:id", controllers.deleteDevice);
 
 // Screen Routes
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
+router.get("/", function(req, res, next) {
+    res.render("index", { title: "Express" });
 });
 
 module.exports = router;

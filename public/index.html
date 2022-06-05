@@ -3,6 +3,7 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <!-- Import VUE  CDN-->
     <script src="https://unpkg.com/vue@next" defer></script>
     <meta charset="UTF-8">
@@ -11,6 +12,7 @@
 
     <!-- Import css  from styles.css-->
     <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./appStyles.css">
     <!-- Import js from app.js-->
     <script src="app.js" defer></script>
     <title>Document</title>
@@ -20,16 +22,28 @@
     <section id="app">
         <header>
             <div id="header-left">
-                <p>Bem vindo á sua Plataforma IoT</p>
+                <p v-if="!logedin">Bem vindo á sua Plataforma IoT</p>
+                <img v-else src="./img/17f4619734513d628d2962b12b01ff60.svg" frameborder="0" width="80" height="80"></img>
             </div>
             <div id="header-center">
                 <p v-if="logedin">{{user.name}} {{user.lastName}}</p>
-                <img v-else src="./img/iot_logo.png">
+                <img v-else src="./img/17f4619734513d628d2962b12b01ff60.svg" frameborder="0" width="80" height="80"></img>
             </div>
             <div id="header-right">
-                <button id="login-button" v-if="!logedin" @click="showLogin">Login</button>
-                <button id="logout-button" v-else @click="logout">Logout</button>
-                <button id="register-button" v-if="!logedin" @click="showRegister">Register</button>
+                <span class="material-symbols-outlined" v-if="!logedin" @click="showLogin" clickable>
+                    login
+                </span>
+                <!-- <button id="login-button" v-if="!logedin" @click="showLogin">Login</button> -->
+
+                <!-- <button id="logout-button" v-else @click="logout">Logout</button> -->
+                <span class="material-symbols-outlined" v-else @click="logout">
+                    logout
+                    </span>
+
+                <!-- <button id="register-button" v-if="!logedin" @click="showRegister">Register</button> -->
+                <span class="material-symbols-outlined" v-if="!logedin" @click="showRegister">
+                    app_registration
+                    </span>
             </div>
         </header>
         <!-- Device/Group Selector Buttons -->
@@ -40,94 +54,84 @@
         <!-- End Device/Group Selector Buttons -->
         <section id="userContent" v-if="logedin">
             <!-- Device Viewer -->
-            <ul>
-                <li v-for="(device, key) in devices" v-if="deviceMode && logedin">
-                    <div class="device-name">
-                        <p>{{device.name}}</p>
-                        <p>DEV: {{key}}</p>
-                        <button @click="deletedevice(device.id)">Delete Device</button>
-                    </div>
-                    <div class="device-status">
-                        <p>{{device.status}}</p>
-                    </div>
-                    <div class="device-actions">
-                        <button @click="changeDeviceStatus(device.id)">{{ device.status === 'inactive' ? 'On' : 'Off'}}</button>
-
-
-                    </div>
-                </li>
+            <div id="devices-and-groups">
+                <ul id="ul-devices">
+                    <li v-for="(device, key) in devices" v-if="deviceMode && logedin" :class="{'log--inactive': device.status==='inactive', 'log--active': device.status==='active'}" @click="changeDeviceStatus(device.id)" clickable>
+                        <div>
+                            <div class="device-name">
+                                <p>{{device.name}}</p>
+                            </div>
+                            <span class="material-symbols-outlined" @click="deletedevice(device.id)" style="color: red; border: 1px; border-style:solid; border-radius: 20px;padding: 5px;">
+                        delete
+                        </span>
+                        </div>
+                    </li>
+                </ul>
                 <!-- End Device Viewer -->
                 <!-- Group Viewer -->
-                <li v-for="(group, key) in groups" v-if="groupMode && logedin">
-                    <div class="group-name">
-                        <p>{{group.name}}</p>
-                        <p>Associated Devices</p>
-                        <div v-for="device in groups[key].device">
-                            <p>Device: {{device.name}} - Status: {{device.status}}</p>
+                <ul id="ul-groups">
+                    <li v-for="(group, key) in groups" v-if="groupMode && logedin" :class="{'log--inactive': group.status==='active', 'log--active': group.status==='inactive'}" @click="changeGroupStatus(key)" clickable>
+                        <div class="group-name">
+                            <p>{{group.name}}</p>
                         </div>
-                        <button @click="deleteGroup(group.id)">Delete Group</button>
-                    </div>
-
-                    <div class="group-status">
-                        <p>{{group.status}}</p>
-                    </div>
-                    <div class="group-actions">
-                        <button @click="changeGroupStatus(key)">On</button>
-                        <button @click="changeGroupStatus(key)">Off</button>
-                    </div>
-                </li>
-                <!-- End Group Viewer -->
-            </ul>
+                        <div>
+                            <p style="text-decoration: underline;">Associated Devices</p>
+                            <div v-for="device in groups[key].device">
+                                <p>{{device.name}}</p>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined" @click="deleteGroup(group.id)" style="color: red; border: 1px; border-style:solid; border-radius: 20px;padding: 5px;">
+                        delete
+                        </span>
+                    </li>
+                    <!-- End Group Viewer -->
+                </ul>
+            </div>
             <!-- Add Froms Viewer Buttons -->
             <div id="mode-selector" v-if="logedin">
-                <button id="mode-selector-button" @click="addDeviceMode = !addDeviceMode">Add Devices</button>
+                <!-- <button id="mode-selector-button" @click="addDeviceMode = !addDeviceMode">Add Devices</button> -->
                 <button id="mode-selector-button" @click="addGroupMode = !addGroupMode">Add Groups</button>
             </div>
             <!-- End Add Froms Viewer Buttons -->
             <!-- Add Forms-->
             <section id="add-section">
-                <section id="register-device" v-if="addDeviceMode">
+                <!-- <section id="register-device" v-if="addDeviceMode">
                     <label for="deviceName">DeviceName</label>
                     <input type="text" name="deviceName" v-model="device.name">
                     <button name="submit" @click="createDevice">Submit</button>
-                </section>
+                </section> -->
                 <section id="register-group" v-if="addGroupMode">
-                    <label for="name">Name</label>
-                    <input type="text" name="name" v-model="group.name">
-
-                    <label for="devices">Devices</label>
-                    <select v-model="group.devices" name="devices" multiple>
+                    <div id="group-name">
+                        <label for="name">Name</label>
+                        <input type="text" name="name" v-model="group.name">
+                        <button @click="addGroup">Submit</button>
+                    </div>
+                    <div id="select-devices-groups">
+                        <label for="devices">Devices</label>
+                        <select v-model="group.devices" name="devices" multiple>
                         <option v-for="(device, key) in devices" :value="device.id">{{device.name}}</option>
-                    </select>
-                    <h1>To Select Multiple hold Ctrl key and Click On The Name</h1>
-
-                    <button @click="addGroup">Submit</button>
+                        </select>
+                        <p>Hold Ctrl to select more than 1 device</p>
+                    </div>
                 </section>
             </section>
             <!-- End Add Forms-->
         </section>
         <div id="pre-login-forms">
-            <section id="register-form" v-if="registerMode">
-                <div>
-                    <label>Register</label>
-                    <input v-model="user.email" placeholder="User Email">
-                    <input v-model="user.password" placeholder="User Password">
-                    <button @click="register" value="Submit">
-
-            </div>
-        </section>
-        <section id="register-form" v-if="loginMode">
-            <div>
-                <label>Login</label>
+            <section class="register-form" v-if="registerMode">
+                <h1>Register</h1>
+                <input v-model="user.email" placeholder="User Email">
+                <input v-model="user.password" placeholder="User Password">
+                <button @click="register" value="Submit">Submit</button>
+            </section>
+            <section class="register-form" v-if="loginMode">
+                <h1>Login</h1>
                 <input v-model="user.email" placeholder="User Email">
                 <input v-model="user.password" placeholder="User Password" type="password">
                 <button @click="submitLogin" value="Submit">Submit</button>
-                    <p v-if="wrongCredentials" style="color: red;">Password Ou user errados</p>
-                </div>
+                <p v-if="wrongCredentials" style="color: red;">Password Ou user errados</p>
             </section>
         </div>
-
-
     </section>
 </body>
 

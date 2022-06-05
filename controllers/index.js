@@ -2,7 +2,47 @@ const { User, Device, Groups, DeviceGroups } = require("../models");
 const mqttHandler = require("./mqtt_handler");
 
 // Activate device with MQTT given a user_id and device_id
+const activateGroup = async(req, res) => {
+    const { user_id, group_id } = req.body;
+    // Get user associed with the device
+    try {
+        const user = await User.findOne({
+            where: {
+                id: user_id,
+            },
+        });
+        // If user exists
+        if (user) {
+            // Change group state
+            const group = await Groups.findOne({
+                where: {
+                    id: group_id,
+                },
+            });
+            if (group.status === "inactive") {
+                let updated = await Groups.update({ status: "active" }, {
+                    where: { id: group_id },
+                });
+                if (updated) {
+                    return res.status(200).json({ group });
+                }
+            } else {
+                let updated = await Groups.update({ status: "inactive" }, {
+                    where: { id: group_id },
+                });
+                if (updated) {
+                    return res.status(200).json({ group });
+                }
+            }
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+
+}
 const activateDevice = async(req, res) => {
+    console.log("##############################")
     try {
         const { user_id, device_id } = req.body;
         // Get user associed with the device
@@ -68,7 +108,6 @@ const activateDevice = async(req, res) => {
         return res.status(500).send(error.message);
     }
 };
-
 const fetchDevices = async(req, res) => {
     try {
         let user_id = req.body.userId;
@@ -254,6 +293,9 @@ const getDevicesFromUserId = async(req, res) => {
         console.log(id);
         const devices = await Device.findAll({
             where: { userId: id },
+            order: [
+                ['name', 'ASC']
+            ]
         });
         if (devices) {
             return res.status(200).json({ devices });
@@ -400,6 +442,7 @@ module.exports = {
     simpleSignup,
     simpleDeleteAccount,
     activateDevice,
+    activateGroup,
     fetchDevices,
     getGroupsFromUserId,
 };

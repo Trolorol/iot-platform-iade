@@ -4,10 +4,10 @@ const app = Vue.createApp({
             logedin: false,
             loginMode: false,
             registerMode: false,
-            deviceMode: false,
-            groupMode: false,
+            deviceMode: true,
+            groupMode: true,
             addDeviceMode: false,
-            addGroupMode: false,
+            addGroupMode: true,
             wrongCredentials: false,
             group: {},
             device: {},
@@ -72,13 +72,11 @@ const app = Vue.createApp({
         },
         changeModeDevices() {
             this.deviceMode = !this.deviceMode;
-            this.groupMode = false;
         },
         changeModeGroups() {
             this.groupMode = !this.groupMode;
-            this.deviceMode = false;
         },
-        async changeDeviceStatus(device_id, index) {
+        async changeDeviceStatus(device_id) {
             //post to /switch_state
             // send user_id, device_id
             if (this.logedin) {
@@ -86,7 +84,8 @@ const app = Vue.createApp({
                     user_id: this.user.id,
                     device_id: device_id,
                 });
-                let response = await $.ajax({
+
+                await $.ajax({
                     url: "/api/switch_state",
                     method: "post",
                     dataType: "json",
@@ -96,6 +95,20 @@ const app = Vue.createApp({
                 this.getDevices();
             }
         },
+        async changeGroupStatus(group_index) {
+            let devices = this.groups[group_index].device;
+            for (let i = 0; i < devices.length; i++) {
+                this.changeDeviceStatus(devices[i].id)
+            }
+            let currentStatus = this.groups[group_index].status
+            if (currentStatus == "active") {
+                this.groups[group_index].status = "inactive";
+            } else {
+                this.groups[group_index].status = "active";
+            }
+            console.log("Groups", this.groups[group_index].status);
+        },
+
         async getDevices() {
             if (this.logedin) {
                 try {
@@ -104,9 +117,7 @@ const app = Vue.createApp({
                         method: "GET",
                         dataType: "json",
                     });
-                    console.log(response);
                     this.devices = response.devices;
-                    console.log(this.devices);
                 } catch (error) {
                     console.log(error);
                 }
@@ -120,7 +131,6 @@ const app = Vue.createApp({
                         method: "GET",
                         dataType: "json",
                     });
-                    console.log(response);
                     this.groups = response.groups;
                 } catch (error) {
                     console.log(error);
@@ -141,7 +151,6 @@ const app = Vue.createApp({
                         }),
                         contentType: "application/json",
                     });
-                    console.log(response);
                     this.groups.push(response.group);
                 } catch (error) {
                     console.log(error);
@@ -154,12 +163,11 @@ const app = Vue.createApp({
             console.log(group_id);
             if (this.logedin) {
                 try {
-                    let response = await $.ajax({
+                    await $.ajax({
                         url: `/api/groups/${group_id}`,
                         method: "DELETE",
                         dataType: "json",
                     });
-                    console.log(response);
                     this.groups = this.groups.filter((group) => group.id != group_id);
                 } catch (error) {
                     console.log(error);
@@ -170,12 +178,11 @@ const app = Vue.createApp({
         async deletedevice(device_id) {
             if (this.logedin) {
                 try {
-                    let response = await $.ajax({
+                    await $.ajax({
                         url: `/api/devices/${device_id}`,
                         method: "DELETE",
                         dataType: "json",
                     });
-                    console.log(response);
                     this.devices = this.devices.filter(
                         (device) => device.id != this.device.id
                     );
@@ -188,7 +195,7 @@ const app = Vue.createApp({
         async createDevice() {
             if (this.logedin) {
                 try {
-                    let response = await $.ajax({
+                    await $.ajax({
                         url: `/api/devices`,
                         method: "POST",
                         dataType: "json",
@@ -198,7 +205,6 @@ const app = Vue.createApp({
                         }),
                         contentType: "application/json",
                     });
-                    console.log(response);
                 } catch (error) {
                     console.log(error);
                 }
@@ -206,27 +212,6 @@ const app = Vue.createApp({
                 this.deviceMode = true;
             }
         },
-        //async toggleDevice(device_id) {
-        //Falta ligar o device no ecra
-        // if (this.logedin) {
-        //   try {
-        //     let response = await $.ajax({
-        //       url: `/switch_state`,
-        //       method: "POST",
-        //       dataType: "json",
-        //       data: JSON.stringify({
-        //         user_id: this.user.id,
-        //         device_id: device_id,
-        //       }),
-        //       contentType: "application/json",
-        //     });
-        //     console.log(response);
-        //   } catch (error) {
-        //     console.log(error);
-        //   }
-        //   this.getDevices();
-        // }
-        // },
     },
     mounted() {
         if (localStorage.getItem("id")) {

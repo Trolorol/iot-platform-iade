@@ -1,130 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap');
 header {
-  background-color: rgb(169, 203, 255);
-  padding: 20px;
-  text-align: center;
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-}
-#header-left {
-  background-color: rgb(41, 41, 250);
-  padding: 20px;
-  text-align: center;
-  display: flex;
-  font-size: large;
-}
-#header-center {
-  background-color: rgb(25, 127, 194);
-  padding: 20px;
-  align-items: center;
-  font-size: large;
-}
-#header-right {
-  background-color: rgb(45, 45, 183);
-  padding: 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: row-reverse;
-}
-#login-button {
-  background-color: rgb(168, 170, 248);
-  color: rgb(0, 0, 0);
-  padding: 10px;
-  border-radius: 5px;
-  margin: 10px;
-}
-#logout-button {
-  background-color: rgb(168, 170, 248);
-  color: rgb(0, 0, 0);
-  padding: 10px;
-  border-radius: 5px;
-  margin: 10px;
-}
-#register-button {
-  background-color: black;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  margin: 10px;
-}
-#mode-selector {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-#mode-selector-button {
-  background-color: rgb(45, 59, 176);
-  color: rgb(0, 0, 0);
-  font-size: 32;
-  padding: 10px;
-  border-radius: 5px;
-  margin: 3px;
+    background-color: rgb(208, 228, 241);
+    padding: 10px;
+    text-align: center;
+    display: grid;
+    border-radius: 30px;
+    grid-template-columns: 1fr 2fr 1fr;
+    box-shadow: 1px 4px #cacaca;
 }
 
-ul li {
-  display: inline-block;
-  background-color: #eee;
-  list-style-type: none;
-  margin-right: 1vh;
-  padding: 5vh;
-  border-right: 1px solid white;
+#header-left {
+    background-color: rgb(208, 228, 241);
+    text-align: center;
+    display: flex;
+    font-size: large;
+    border-top-left-radius: 15px 15px;
+    border-bottom-left-radius: 15px 15px;
+}
+
+#header-left,
+#header-center {
+    font-family: 'Kdam Thmor Pro', sans-serif;
+    font-size: 20px;
+    align-items: center;
+}
+
+#header-center {
+    background-color: rgb(208, 228, 241);
+    align-items: center;
+    font-size: large;
+}
+
+#header-right {
+    background-color: rgb(208, 228, 241);
+    text-align: center;
+    display: flex;
+    flex-direction: row-reverse;
+    border-top-right-radius: 15px 15px;
+    border-bottom-right-radius: 15px 15px;
+    align-items: center;
+}
+
+.material-symbols-outlined {
+    cursor: pointer;
+    margin-left: 1vh;
+    margin-right: 1vh;
+}
+
+#logout-button {
+    background-color: rgb(168, 170, 248);
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+#register-button {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+#mode-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 input[type="text"] {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
 }
 
 input[type="submit"] {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-}
-#register-device {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-#add-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-#register-group {
-  grid-column-start: -1;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
 }
 
 #register-device {
-  grid-column-start: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#add-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#register-group {
+    display: grid;
+    grid-template-columns: 20vh 1fr;
+}
+
+#register-group #group-name {
+    font-family: 'Kdam Thmor Pro', sans-serif;
+    font-size: 20px;
+    align-items: center;
+    width: 20vh;
+}
+
+#register-group #select-devices-groups {
+    display: grid;
+    grid-template-columns: 100%;
+    text-align: center;
+}
+
+#register-group select {
+    align-items: center;
+    width: 100%;
+    padding: 0.25em 0.5em;
+    cursor: pointer;
+    margin-left: 2vh;
 }
 
 #add-section input[type="text"] {
-  color: red;
+    color: red;
 }
 
 #add-section input[type="submit"] {
-  color: red;
+    color: red;
 }
 
-#register-form {
-  grid-column-start: 2;
-  display:flex;
-  
-
+#register-form>label {
+    color: rgb(148, 154, 241);
 }
 
-#register-form > label{
-color: rgb(148, 154, 241);
+#pre-login-forms {
+    margin-top: 5vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
 }
 
-
-#pre-login-forms{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+.register-form {
+    text-align: center;
+    grid-column-start: 2;
+    display: grid;
 }
 
-body{
-  background-color: #1f1d22;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%23a095b3' fill-opacity='0.22' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+.register-form,
+input {
+    margin: 1vh;
 }
 
+.register-form,
+button {
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+}
 
+body {
+    background-color: rgb(250, 242, 239);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%23a095b3' fill-opacity='0.22' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}

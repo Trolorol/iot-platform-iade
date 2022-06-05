@@ -51,8 +51,9 @@
                         <p>{{device.status}}</p>
                     </div>
                     <div class="device-actions">
-                        <button @click="changeDeviceStatus(device.id, key)">On</button>
-                        <button @click="changeDeviceStatus(device.id, key)">Off</button>
+                        <button @click="changeDeviceStatus(device.id)">{{ device.status === 'inactive' ? 'On' : 'Off'}}</button>
+
+
                     </div>
                 </li>
                 <!-- End Device Viewer -->

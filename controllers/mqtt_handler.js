@@ -8,54 +8,114 @@ const mqttUser = process.env.MQTTS_USER;
 const mqttPassword = process.env.MQTTS_PASSWORD;
 
 let opt = {
-  host: mqttEndpoint,
-  port: mqttPort,
-  username: mqttUser,
-  password: mqttPassword,
-  protocol: "mqtts",
+    clean: true,
+    host: mqttEndpoint,
+    port: mqttPort,
+    username: mqttUser,
+    password: mqttPassword,
+    clientId: 'mqttjs'
 };
 
-function sendMessage(topic, message) {
-  console.log("#############");
-  console.log("sendMessage");
-  console.log(topic);
-  console.log(message);
-  console.log("#############");
-  var client = mqtt.connect(mqttEndpoint, opt);
+var client = mqtt.connect(mqttEndpoint, opt);
 
-  client.publish(topic, message);
-}
+client.on('connect', function() {
+    let topic = "discovery/devices/#";
+    console.log('mqtt connected');
 
-function readTopic() {
-  console.log("readTopic");
-  var client = mqtt.connect(mqttEndpoint, opt);
-  let topic = "discovery/devices/#";
-
-  client.on("connect", () => {
-    console.log("Connected");
     client.subscribe([topic], () => {
-      console.log(`Subscribe to topic '${topic}'`);
+        console.log(`Subscribe to topic '${topic}'`);
     });
-  });
 
-  client.on("message", (topic, payload) => {
-    console.log("Received Message:", topic, payload.toString());
-    // let message = JSON.parse(payload.toString());
-    let userEmail = topic.split("/")[2];
-    let message = payload.toString();
-    console.log(userEmail !== undefined);
+    client.on('message', function(topic, payload) {
+        console.log("Received Message:", topic, payload.toString());
+        // let message = JSON.parse(payload.toString());
+        let userEmail = topic.split("/")[2];
+        let message = payload.toString();
+        console.log("message", payload);
+        console.log(userEmail !== undefined);
 
-    if (userEmail !== undefined) {
-      let deviceParams = {
-        userEmail: userEmail,
-        deviceSerial: JSON.parse(message).deviceSerial,
-      };
-      deviceDiscovery(deviceParams);
-    }
-  });
-}
+        if (userEmail !== undefined) {
+            if (message) {
 
-module.exports = {
-  readTopic,
-  sendMessage,
-};
+                let messageObj = JSON.parse(message);
+                if (messageObj.deviceSerial) {
+                    let deviceParams = {
+                        userEmail: userEmail,
+                        deviceSerial: messageObj.deviceSerial,
+                    };
+                    deviceDiscovery(deviceParams);
+                }
+            }
+            console.log("Fool You")
+        }
+    });
+});
+
+client.on('error', function(error) {
+    console.log('mqtt error: ' + error);
+});
+
+client.on('close', function() {
+    console.log('mqtt closed');
+});
+
+client.on('offline', function() {
+    console.log('offline');
+});
+
+client.on('reconnect', function() {
+    console.log('reconnect');
+});
+
+// function sendMessage(topic, message) {
+//     message = JSON.stringify(message);
+//     console.log("#############");
+//     console.log("sendMessage");
+//     console.log(topic);
+//     console.log(message);
+//     console.log("#############");
+//     var client = mqtt.connect(mqttEndpoint, opt);
+
+//     client.publish(topic, message);
+//     client.end();
+// }
+
+// function readTopic() {
+//     console.log("readTopic");
+//     console.log(opt);
+//     var client = mqtt.connect(mqttEndpoint, opt);
+//     let topic = "discovery/devices/#";
+
+//     client.on("connect", () => {
+//         console.log("Connected");
+//         client.subscribe([topic], () => {
+//             console.log(`Subscribe to topic '${topic}'`);
+//         });
+//     });
+
+//     client.on("message", (topic, payload) => {
+//         console.log("Received Message:", topic, payload.toString());
+//         // let message = JSON.parse(payload.toString());
+//         let userEmail = topic.split("/")[2];
+//         let message = payload.toString();
+//         console.log("message", payload);
+//         console.log(userEmail !== undefined);
+
+//         if (userEmail !== undefined) {
+//             if (message) {
+
+//                 let messageObj = JSON.parse(message);
+//                 if (messageObj.deviceSerial) {
+//                     let deviceParams = {
+//                         userEmail: userEmail,
+//                         deviceSerial: messageObj.deviceSerial,
+//                     };
+//                     deviceDiscovery(deviceParams);
+//                 }
+//             }
+//             console.log("Fool You")
+//         }
+//     });
+// }
+
+module.exports = { client };

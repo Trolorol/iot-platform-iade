@@ -57,35 +57,98 @@
             <div id="devices-and-groups">
                 <ul id="ul-devices">
                     <li v-for="(device, key) in devices" v-if="deviceMode && logedin" :class="{'log--inactive': device.status==='inactive', 'log--active': device.status==='active'}" @click="changeDeviceStatus(device.id)" clickable>
+
                         <div>
                             <div class="device-name">
-                                <p>{{device.name}}</p>
+                                <p v-if="!editDeviceMode">{{device.name}}</p>
+                                <input v-else type="text" v-model="device.name" @click.stop @keyup.prevent>
                             </div>
-                            <span class="material-symbols-outlined" @click="deletedevice(device.id)" style="color: red; border: 1px; border-style:solid; border-radius: 20px;padding: 5px;">
-                        delete
-                        </span>
+                            <div>
+                                <Transition>
+                                    <span v-if="editDeviceMode" class="material-symbols-outlined" @click.stop="deletedevice(device.id)" style="color: red; border: 1px; border-style:solid; border-radius: 20px;padding: 5px;">
+                                delete
+                            </span>
+                                </Transition>
+                                <Transition></Transition>
+                                <span v-if="editDeviceMode" class="material-symbols-outlined" @click.stop="saveDeviceEdit(key)" style="color: green; border: 1px; border-style:solid; border-radius: 20px;padding: 5px; ">
+                                save
+                                </span>
+                                </Transition>
+                                <Transition>
+                                    <span class="material-symbols-outlined" @click.stop="this.editDeviceMode = !this.editDeviceMode" style="color: red; border: 1px; border-style:solid; border-radius: 20px;padding: 5px;">
+                                    edit
+                                </span>
+                                </Transition>
+                            </div>
                         </div>
                     </li>
                 </ul>
                 <!-- End Device Viewer -->
                 <!-- Group Viewer -->
-                <ul id="ul-groups">
-                    <li v-for="(group, key) in groups" v-if="groupMode && logedin" :class="{'log--inactive': group.status==='active', 'log--active': group.status==='inactive'}" @click="changeGroupStatus(key)" clickable>
+                <ul id="ul-groups" v-if="!addDeviceToGroupMode">
+                    <li v-for="(group, key) in groups" v-if="groupMode && logedin" :class="{'log--inactive': group.status==='inactive', 'log--active': group.status==='active'}" @click="changeGroupStatus(key)" clickable>
                         <div class="group-name">
-                            <p>{{group.name}}</p>
+                            <p v-if="!editGroupMode">{{group.name}}</p>
+                            <input v-else type="text" v-model="group.name" @click.stop @keyup.prevent>
                         </div>
                         <div>
                             <p style="text-decoration: underline;">Associated Devices</p>
-                            <div v-for="device in groups[key].device">
-                                <p>{{device.name}}</p>
+                            <div v-for="(device) in groups[key].device">
+                                <div id="group-edit-card">
+                                    <p>{{device.name}}</p>
+                                    <span v-if="editGroupMode" class="material-symbols-outlined" @click.stop="deleteDeviceFromGroup(device.id, group.id, key)">
+                                        delete
+                                    </span>
+                                </div>
+                            </div>
+                            <Transition>
+                                <span class="material-symbols-outlined" id="add-circle" @click.stop="addDeviceToGroup(group)" v-if="editGroupMode">
+                                add_circle
+                            </span>
+                            </Transition>
+                            <div v-if="addDeviceToGroupMode">
+                                Dispoitivos Disponíveis
                             </div>
                         </div>
-                        <span class="material-symbols-outlined" @click="deleteGroup(group.id)" style="color: red; border: 1px; border-style:solid; border-radius: 20px;padding: 5px;">
-                        delete
+                        <div>
+                            <Transition>
+                                <span v-if="editGroupMode" class="material-symbols-outlined" @click.stop="deleteGroup(group.id)" style="color: red; border: 1px; border-style:solid; border-radius: 20px;padding: 5px;">
+                            delete
                         </span>
+                            </Transition>
+                            <Transition>
+                                <span class="material-symbols-outlined" @click.stop="editGroupMode = !editGroupMode" style="color: red; border: 1px; border-style:solid; border-radius: 20px;padding: 5px;">
+                            edit
+                        </span>
+                            </Transition>
+                            <Transition></Transition>
+                            <span v-if="editGroupMode" class="material-symbols-outlined" @click.stop="editGroup(key)" style="color: green; border: 1px; border-style:solid; border-radius: 20px;padding: 5px; ">
+                            save
+                            </span>
+                            </Transition>
+
+                        </div>
                     </li>
                     <!-- End Group Viewer -->
                 </ul>
+
+                <div v-else>
+                    <div id="device-group">
+                        <div id="device-group-selector" v-for="(device) in devices">
+                            <div id="device-card-group-selector">
+                                {{device.name}}
+                                <span class="material-symbols-outlined" :class="{'log--inactive': checkIfinGroup(device.id)==false, 'log--active': checkIfinGroup(device.id)==true}">
+                                    add_circle
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <button @click="exitAddDeviceToGroup"></button>
+                </div>
+
+
             </div>
             <!-- Add Froms Viewer Buttons -->
             <div id="mode-selector" v-if="logedin">
@@ -95,11 +158,6 @@
             <!-- End Add Froms Viewer Buttons -->
             <!-- Add Forms-->
             <section id="add-section">
-                <!-- <section id="register-device" v-if="addDeviceMode">
-                    <label for="deviceName">DeviceName</label>
-                    <input type="text" name="deviceName" v-model="device.name">
-                    <button name="submit" @click="createDevice">Submit</button>
-                </section> -->
                 <section id="register-group" v-if="addGroupMode">
                     <div id="group-name">
                         <label for="name">Name</label>
@@ -109,8 +167,14 @@
                     <div id="select-devices-groups">
                         <label for="devices">Devices</label>
                         <select v-model="group.devices" name="devices" multiple>
-                        <option v-for="(device, key) in devices" :value="device.id">{{device.name}}</option>
+                        <option 
+                            v-for="(device, key) in devices" 
+                            :value="device.id"
+                        >
+                        {{device.name}}
+                        </option>
                         </select>
+
                         <p>Hold Ctrl to select more than 1 device</p>
                     </div>
                 </section>

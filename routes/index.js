@@ -19,6 +19,8 @@ router.get("/groups/:user_id", controllers.getGroupsFromUserId);
 
 router.post("/groups", controllers.createGroup);
 router.delete("/groups/:id", controllers.deleteGroup);
+router.post("/groups/edit", controllers.updateGroup);
+router.post("/groups/edit/associated_devices", controllers.updateGroupDevices);
 //USERS ROUTES//
 
 router.get("/users/devices/:user_id", controllers.getDevicesFromUserId);
@@ -41,7 +43,7 @@ router.get("/devices", controllers.getAllDevices);
 
 router.get("/devices/:id", controllers.getDeviceById);
 
-router.put("/devices/:id", controllers.updateDevice);
+router.post("/devices/edit", controllers.updateDevice);
 
 router.delete("/devices/:id", controllers.deleteDevice);
 

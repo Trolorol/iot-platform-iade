@@ -2,7 +2,7 @@ const app = Vue.createApp({
     data() {
         return {
             logedin: false,
-            loginMode: false,
+            loginMode: true,
             registerMode: false,
             welcomeMode: false,
             deviceMode: true,

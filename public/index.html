@@ -155,17 +155,32 @@
         </section>
         <div id="pre-login-forms">
             <section class="register-form" v-if="registerMode">
-                <h1>Register</h1>
-                <input v-model="user.email" placeholder="User Email">
-                <input v-model="user.password" placeholder="User Password">
-                <button @click="register" value="Submit">Submit</button>
+                <div id="register-card">
+                    <h1>Register</h1>
+                    <input v-model="user.name" placeholder="Name">
+                    <input v-model="user.lastName" placeholder="LastName">
+
+                    <input v-model="user.email" placeholder="User Email" :class="{'malform-register': emailCheckError==true, 'register-correct': emailCheckError==false}">
+                    <input v-model="user.password" placeholder="User Password" type="password">
+                    <input v-model="passwordCheck" placeholder="Repeat password" :class="{'malform-register': passwordCheckError==true, 'register-correct': passwordCheckError==false}" type="password">
+                    <button @click="registerNewUser()" value="Submit">Submit</button>
+                </div>
             </section>
             <section class="register-form" v-if="loginMode">
-                <h1>Login</h1>
-                <input v-model="user.email" placeholder="User Email">
-                <input v-model="user.password" placeholder="User Password" type="password">
-                <button @click="submitLogin" value="Submit">Submit</button>
-                <p v-if="wrongCredentials" style="color: red;">Password Ou user errados</p>
+                <div id="register-card">
+                    <h1>Login</h1>
+                    <input v-model="user.email" placeholder="User Email">
+                    <input v-model="user.password" placeholder="User Password" type="password">
+                    <button @click="submitLogin" value="Submit">Submit</button>
+                    <p v-if="wrongCredentials" style="color: red;">Password Ou user errados</p>
+                    <button @click="showRegister" value="Submit">No account? Register here</button>
+                </div>
+            </section>
+            <section v-if="welcomeMode" class="welcome">
+                <h1>Welcome</h1>
+                <h2>{{user.name}} {{user.lastName}}</h2>
+                <p>You can now use your credentials to log in.</p>
+                <button @click="showLogin()">Login Here</button>
             </section>
         </div>
     </section>

@@ -13,8 +13,10 @@ let opt = {
     port: mqttPort,
     username: mqttUser,
     password: mqttPassword,
-    clientId: 'mqttjs'
+    clientId: 'mqtt-' + Math.random().toString(16)
 };
+
+console.log("Logged in MQTT with id: ", opt.clientId);
 
 var client = mqtt.connect(mqttEndpoint, opt);
 

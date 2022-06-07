@@ -136,6 +136,7 @@ const createUser = async(req, res) => {
     try {
         const user = await User.create(req.body);
         return res.status(201).json({
+            status: 200,
             user,
         });
     } catch (error) {

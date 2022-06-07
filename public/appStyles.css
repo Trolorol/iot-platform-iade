@@ -27,6 +27,7 @@
     padding: 2vh;
     width: 10vh;
     margin-bottom: 1vh;
+    overflow: hidden;
 }
 
 #ul-devices li,
@@ -49,7 +50,7 @@
     max-height: 20vh;
     min-height: 15vh;
     justify-content: center;
-    overflow: auto;
+    overflow: hidden;
 }
 
 #device-group,
@@ -63,13 +64,19 @@
     background-color: rgb(201, 200, 200);
     padding: 2vh;
     justify-content: center;
-    overflow: auto;
+    overflow: hidden;
     border-radius: 10px;
     margin-right: 1vh;
     margin-bottom: 1vh;
 }
 
 #ul-groups li:hover {
+    background-color: rgb(165, 189, 204);
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
+#ul-devices li:hover {
     background-color: rgb(165, 189, 204);
     box-shadow: 0 5px #666;
     transform: translateY(4px);
@@ -149,4 +156,14 @@ ul li button {
     font-size: 3vh !important;
     margin-top: 2vh;
     font-weight: 0.5px;
+}
+
+.welcome {
+    font-family: 'Kdam Thmor Pro', sans-serif;
+}
+
+.welcome h1 {
+    font-size: 6vh;
+    margin-top: 5vh;
+    margin-bottom: 3vh;
 }

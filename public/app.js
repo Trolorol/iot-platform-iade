@@ -4,6 +4,7 @@ const app = Vue.createApp({
             logedin: false,
             loginMode: false,
             registerMode: false,
+            welcomeMode: false,
             deviceMode: true,
             editDeviceMode: false,
             editGroupMode: false,
@@ -13,6 +14,9 @@ const app = Vue.createApp({
             addGroupMode: false,
             wrongCredentials: false,
             groupManaging: null,
+            passwordCheck: "",
+            passwordCheckError: null,
+            emailCheckError: false,
             group: {},
             device: {},
             user: {
@@ -30,6 +34,7 @@ const app = Vue.createApp({
         showLogin() {
             this.loginMode = true;
             this.registerMode = false;
+            this.welcomeMode = false;
         },
         async submitLogin() {
             var raw = JSON.stringify({
@@ -68,10 +73,12 @@ const app = Vue.createApp({
             localStorage.removeItem("firstName");
             localStorage.removeItem("lastName");
             localStorage.removeItem("email");
+            this.loginMode = true;
         },
         showRegister() {
             this.registerMode = true;
             this.loginMode = false;
+            this.welcomeMode = false;
         },
         changeModeDevices() {
             this.deviceMode = !this.deviceMode;
@@ -329,7 +336,55 @@ const app = Vue.createApp({
                 this.exitAddDeviceToGroup()
 
             }
+        },
+        async registerNewUser() {
+            console.log(this.emailCheckError);
+            console.log(this.passwordCheckError);
+            if (this.emailCheckError == false && this.passwordCheckError == false) {
+                console.log("New user with email: " + this.user.email + " and password: " + this.user.password)
+
+                //post to api/users
+                let register = await $.ajax({
+                    url: "/api/users",
+                    method: "POST",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        firstName: this.user.name,
+                        lastName: this.user.lastName,
+                        email: this.user.email,
+                        password: this.user.password,
+                    }),
+                    contentType: "application/json",
+                });
+
+                if (register.status == "200") {
+                    this.registerMode = false;
+                    this.welcomeMode = true;
+                } else {
+                    console.log("Error: " + register);
+                }
+
+
+            }
+
+        },
+        validateEmail(value) {
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
+                this.emailCheckError = false;
+            } else {
+                this.emailCheckError = true;
+            }
+        },
+        validatePassword(value) {
+            if (this.user.password != value) {
+                this.passwordCheckError = true;
+                console.log("Password not match")
+            } else {
+                this.passwordCheckError = false;
+                console.log("Password match")
+            }
         }
+
     },
     mounted() {
         if (localStorage.getItem("id")) {
@@ -342,6 +397,19 @@ const app = Vue.createApp({
             this.getGroups();
         }
     },
+    watch: {
+        passwordCheck(newValue) {
+            this.passwordCheck = newValue;
+            this.validatePassword(newValue);
+        },
+        'user.email' (value) {
+            // binding this to the data value in the email input
+            this.email = value;
+            this.validateEmail(value);
+        }
+
+    }
+
 });
 
 app.mount("#app");

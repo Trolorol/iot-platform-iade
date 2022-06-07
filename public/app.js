@@ -386,9 +386,10 @@ const app = Vue.createApp({
         }
 
     },
-    mounted() {
+    beforeMount() {
         if (localStorage.getItem("id")) {
             this.logedin = true;
+            this.loginMode = false;
             this.user.id = localStorage.getItem("id");
             this.user.name = localStorage.getItem("firstName");
             this.user.lastName = localStorage.getItem("lastName");

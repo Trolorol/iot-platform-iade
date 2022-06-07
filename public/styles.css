@@ -193,3 +193,9 @@ button {
     font-size: 16px;
     font-family: 'Kdam Thmor Pro', sans-serif;
 }
+
+.register-form button:hover {
+    background-color: rgb(165, 189, 204);
+    box-shadow: 0 2px rgb(135, 154, 165);
+    transform: translateY(2px);
+}

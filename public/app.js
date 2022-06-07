@@ -5,10 +5,14 @@ const app = Vue.createApp({
             loginMode: false,
             registerMode: false,
             deviceMode: true,
+            editDeviceMode: false,
+            editGroupMode: false,
             groupMode: true,
             addDeviceMode: false,
-            addGroupMode: true,
+            addDeviceToGroupMode: false,
+            addGroupMode: false,
             wrongCredentials: false,
+            groupManaging: null,
             group: {},
             device: {},
             user: {
@@ -50,7 +54,6 @@ const app = Vue.createApp({
                 localStorage.setItem("email", response.user.email);
                 this.loginMode = false;
                 this.logedin = true;
-                console.log(response);
             } catch (error) {
                 if (error.status == 401) {
                     this.wrongCredentials = true;
@@ -106,14 +109,12 @@ const app = Vue.createApp({
             } else {
                 this.groups[group_index].status = "active";
             }
-            console.log("Groups", this.groups[group_index].status);
         },
-
         async getDevices() {
             if (this.logedin) {
                 try {
                     let response = await $.ajax({
-                        url: `/api/users/devices/${1}`,
+                        url: `/api/users/devices/${this.user.id}`,
                         method: "GET",
                         dataType: "json",
                     });
@@ -127,7 +128,7 @@ const app = Vue.createApp({
             if (this.logedin) {
                 try {
                     let response = await $.ajax({
-                        url: `/api/groups/${1}`,
+                        url: `/api/groups/${this.user.id}`,
                         method: "GET",
                         dataType: "json",
                     });
@@ -147,7 +148,6 @@ const app = Vue.createApp({
                         data: JSON.stringify({
                             name: this.group.name, //TODO
                             userId: this.user.id,
-                            devices: this.group.devices,
                         }),
                         contentType: "application/json",
                     });
@@ -157,10 +157,10 @@ const app = Vue.createApp({
                 }
                 this.getGroups();
                 this.groupMode = true;
+                this.addGroupMode = false;
             }
         },
         async deleteGroup(group_id) {
-            console.log(group_id);
             if (this.logedin) {
                 try {
                     await $.ajax({
@@ -174,6 +174,80 @@ const app = Vue.createApp({
                 }
                 this.getGroups();
             }
+        },
+        async editGroup(index) {
+            if (this.logedin) {
+                try {
+                    let groupUpdate = this.groups[index]
+                    let dataSend = JSON.stringify({
+                        groupId: groupUpdate.id,
+                        name: groupUpdate.name,
+                    })
+                    await $.ajax({
+                        url: `/api/groups/edit`,
+                        method: "POST",
+                        dataType: "json",
+                        data: dataSend,
+                        contentType: "application/json",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+                this.getGroups();
+                this.editGroupMode = false;
+            }
+        },
+        deleteDeviceFromGroup(deviceId, groupId, group_key) {
+            if (this.logedin) {
+                try {
+                    let dataSend = JSON.stringify({
+                        deviceId: deviceId,
+                        groupId: groupId,
+                        action: "remove",
+                    })
+                    $.ajax({
+                        url: `/api/groups/edit/associated_devices`,
+                        method: "POST",
+                        dataType: "json",
+                        data: dataSend,
+                        contentType: "application/json",
+                    });
+                } catch (error) {
+                    console.log(error);
+
+                }
+                //Remove index group from this.groups
+                this.groups.splice(group_key, 1);
+            }
+
+            this.getGroups();
+
+        },
+        editDevice() {
+            this.editDeviceMode = !this.editDeviceMode
+        },
+        async saveDeviceEdit(index) {
+            if (this.logedin) {
+                try {
+                    let deviceUpdate = this.devices[index]
+                    let dataSend = JSON.stringify({
+                        deviceId: deviceUpdate.id,
+                        name: deviceUpdate.name,
+                    })
+                    await $.ajax({
+                        url: `/api/devices/edit`,
+                        method: "POST",
+                        dataType: "json",
+                        data: dataSend,
+                        contentType: "application/json",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+                this.getDevices();
+                this.editDeviceMode = false;
+            }
+
         },
         async deletedevice(device_id) {
             if (this.logedin) {
@@ -212,6 +286,50 @@ const app = Vue.createApp({
                 this.deviceMode = true;
             }
         },
+        checkIfinGroup(deviceId) { //groupIdManaging=group.id
+            let x = this.groupManaging.device
+            for (let i = 0; i < x.length; i++) {
+                if (x[i].id == deviceId) {
+                    return true
+                }
+            }
+            return false
+
+        },
+        addDeviceToGroup(group) {
+            this.addDeviceToGroupMode = true;
+            this.groupManaging = group;
+        },
+        exitAddDeviceToGroup() {
+            this.addDeviceToGroupMode = false;
+            this.groupManaging = null;
+        },
+        async addDeviceToGroupConfirm(device_id) {
+            if (this.logedin) {
+                try {
+                    let dataSend = JSON.stringify({
+                        deviceId: device_id,
+                        groupId: this.groupManaging.id,
+                        action: "add",
+                    })
+                    $.ajax({
+                        url: `/api/groups/edit/associated_devices`,
+                        method: "POST",
+                        dataType: "json",
+                        data: dataSend,
+                        contentType: "application/json",
+                    });
+                } catch (error) {
+                    console.log(error);
+
+                }
+                //Remove index group from this.groups
+                this.getGroups();
+                this.getDevices();
+                this.exitAddDeviceToGroup()
+
+            }
+        }
     },
     mounted() {
         if (localStorage.getItem("id")) {

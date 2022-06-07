@@ -251,16 +251,18 @@ const getDeviceById = async(req, res) => {
 
 const updateDevice = async(req, res) => {
     try {
-        const { id } = req.params;
-        const [updated] = await Device.update(req.body, {
-            where: { id: id },
+        let deviceId = req.body.deviceId;
+        let newName = req.body.name;
+
+
+        const [updated] = await Device.update({ name: newName }, {
+            where: { id: deviceId },
         });
-        if (updated) {
-            const updatedDevice = await Device.findOne({ where: { id: id } });
-            return res.status(200).json({ device: updatedDevice });
-        }
-        throw new Error("Device not found");
+
+        return res.status(200).json({ updated });
+
     } catch (error) {
+        console.log(error);
         return res.status(500).send(error.message);
     }
 };
@@ -290,6 +292,9 @@ const getDevicesFromUserId = async(req, res) => {
     //
     try {
         let id = req.params.user_id;
+        console.log("##########")
+        console.log("User Id: ", id);
+        console.log("##########")
         console.log(id);
         const devices = await Device.findAll({
             where: { userId: id },
@@ -393,12 +398,15 @@ const getGroupsFromUserId = async(req, res) => {
 
 const createGroup = async(req, res) => {
     try {
-        //TODO Falta associar devices iniciais ao grupo
-        const group = await Groups.create(req.body);
-        return res.status(201).json({
-            group,
+        console.log(req.body);
+        const group = await Groups.create({
+            name: req.body.name,
+            userId: req.body.userId,
+            status: 'inactive',
         });
+        return res.status(201).json({ group });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: error.message });
     }
 };
@@ -407,7 +415,7 @@ const deleteGroup = async(req, res) => {
     try {
         let groupId = req.params.id;
 
-        const deleteAssociations = await DeviceGroups.destroy({
+        await DeviceGroups.destroy({
             where: { groupId: groupId },
         });
 
@@ -424,6 +432,51 @@ const deleteGroup = async(req, res) => {
     }
 };
 
+const updateGroup = async(req, res) => {
+    try {
+        let groupId = req.body.groupId;
+        let newName = req.body.name;
+
+
+        const [updated] = await Groups.update({ name: newName }, {
+            where: { id: groupId },
+        });
+        if (updated) {
+            return res.status(200).json({ group: updated });
+        }
+        return res.status(200)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(error.message);
+    }
+}
+
+const updateGroupDevices = async(req, res) => {
+    try {
+        let groupId = req.body.groupId;
+        let deviceId = req.body.deviceId;
+        let action = req.body.action;
+        console.log(req.body.action);
+        console.log("Action: ", action, "DeviceId: ", deviceId, "GroupId: ", groupId);
+
+        if (action === 'add') { //bananas
+            const groupassoc = await DeviceGroups.create({
+                groupId: groupId,
+                deviceId: deviceId,
+            });
+            return res.status(201).json({ groupassoc });
+        } else if (action === 'remove') {
+            await DeviceGroups.destroy({
+                where: { deviceId: deviceId, groupId: groupId },
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send("Error updating group devices");
+    }
+}
+
+
 module.exports = {
     deleteGroup,
     createGroup,
@@ -431,6 +484,7 @@ module.exports = {
     getAllUsers,
     getUserById,
     updateUser,
+    updateGroup,
     deleteUser,
     createDevice,
     getAllDevices,
@@ -445,4 +499,5 @@ module.exports = {
     activateGroup,
     fetchDevices,
     getGroupsFromUserId,
+    updateGroupDevices
 };

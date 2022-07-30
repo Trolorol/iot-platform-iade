@@ -46,16 +46,17 @@ What things you need to install the software and how to install them.
 ```
 node
 ```
-```
-mosquitto server 
-```
 
+```
+mosquitto server
+```
 
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running.
 
 1- Start by cloning this repo
+
 <p>
 2- Create a postgres db
 <p>
@@ -68,83 +69,119 @@ After running npm install and creating a postgres db run:
 ```
 npx sequelize-cli db:create
 ```
+
 ```
 npx sequelize-cli db:migrate
 ```
+
 ```
 npx sequelize-cli db:seeds
 ```
+
 This comenads will create the database, migrate the model into postgres and seed some examples into the database.
 
-After this steps you are ready to go! 
+After this steps you are ready to go!
 
-TODO 
+TODO
+
 ```
 ADD DOCKER OPTIONS
 ```
 
+Run
 
-Run 
 ```
-npm start 
+npm start
 ```
+
 To start the server and you can test some calls to this API.
 
-Start by: 
+Start by:
+
 ```
 get http://localhost:3000/api/users/1
 ```
+
 This call will return user wityh id = 1 and all associated devices:
+
 ```json
 {
-    "user": {
+  "user": {
+    "id": 1,
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "kobe@blackmamba.com",
+    "password": null,
+    "createdAt": "2022-05-08T03:36:40.574Z",
+    "updatedAt": "2022-05-08T03:36:40.574Z",
+    "Devices": [
+      {
         "id": 1,
-        "firstName": "John",
-        "lastName": "Doe",
-        "email": "kobe@blackmamba.com",
-        "password": null,
-        "createdAt": "2022-05-08T03:36:40.574Z",
-        "updatedAt": "2022-05-08T03:36:40.574Z",
-        "Devices": [
-            {
-                "id": 1,
-                "name": "Device 1",
-                "userId": 1,
-                "status": "inactive",
-                "createdAt": "2022-05-08T03:36:40.592Z",
-                "updatedAt": "2022-05-08T16:25:48.822Z"
-            }
-        ]
-    }
+        "name": "Device 1",
+        "userId": 1,
+        "status": "inactive",
+        "createdAt": "2022-05-08T03:36:40.592Z",
+        "updatedAt": "2022-05-08T16:25:48.822Z"
+      }
+    ]
+  }
 }
 ```
 
-OR: 
+OR:
+
 ```
 post http://localhost:3000/api/switch_state
 ```
+
 with the json payload of:
+
 ```json
-{"user_id":1,
-"device_id":1
-}
+{ "user_id": 1, "device_id": 1 }
 ```
-This call will change to ```n=!n``` state of the device 
 
-## 🔧 Running the tests <a name = "tests"></a>
+This call will change to `n=!n` state of the device
+<br/>
+<br/>
+<br/>
 
-TODO
+### MQTT Server
 
-### And coding style tests
+MQTT server works by recieving messages to topics, and subscriptions that listents to those topics. Topics are urlish style ex: `/mainTopic1/subTopic1/subSubTopic1`
+There is no need to create any topic on mqtt server side, when a client sends a message to any topic, if that topic tdoesnt exists, it will be created.
+There are some more advance features regarding topic creation amd security, but I will not cover this here.
 
-TODO
+<br/>
+### MQTT Server Node connection
 
-## 🎈 Usage <a name="usage"></a>
+This project uses node MQTT library [Link Here](https://www.npmjs.com/package/mqtt).
 
-TODO
-## 🚀 Deployment <a name = "deployment"></a>
+In the controllers sections, there is a mqtt_handler.js file.
+This file exports a client, that recognizes mqtt actions.
+This handler is also responsible for automatic mqtt subscription to the mqtt server.
+In discovery mode, the server has to recognize any devices that are new, and didn't got connected to a specific user. For this we subscribe to all topics beyond `discovery/devices/#` The '#' symbol means that it will listen to all topics beyond `discovery/devices/#` ex: `discovery/devices/test1` & `discovery/devices/2` & `discovery/devices/n`
+In this project domain, this means, that the devices when activated for the first time will send a 'im alive' kinda message to this general topic, this is then grabed by the backend that recognizes the user, and adds the device ID to the database in junction with the user_id.
 
-TODO
+<br/>
+
+```js
+client.on("connect", function () {
+  const topic = "discovery/devices/#";
+  console.log("mqtt connected");
+
+  client.subscribe([topic], () => {
+    console.log(`Subscribe to topic '${topic}'`);
+  });
+```
+
+<br/>
+
+If you don't want to create a docker container for the MQTT mosquitto server, you can allways use the mosquitto testing server, endpoints can be found [here](https://test.mosquitto.org).
+
+<br/>
+<br/>
+<br/>
+
 ## ⛏️ Built Using <a name = "built_using"></a>
 
 - [Postgres](https://www.postgresql.org/) - Database
@@ -155,5 +192,3 @@ TODO
 
 - [@Trolorol](https://github.com/Trolorol)
 - [@Fredcostar](https://github.com/Fredcostar)
-
-

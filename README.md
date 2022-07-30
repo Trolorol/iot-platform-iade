@@ -152,6 +152,7 @@ There is no need to create any topic on mqtt server side, when a client sends a 
 There are some more advance features regarding topic creation amd security, but I will not cover this here.
 
 <br/>
+
 ### MQTT Server Node connection
 
 This project uses node MQTT library [Link Here](https://www.npmjs.com/package/mqtt).
